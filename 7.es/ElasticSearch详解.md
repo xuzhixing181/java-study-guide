@@ -45,7 +45,7 @@
 
   =》**目录树的节点中存放这些词项在磁盘中偏移量**（指向磁盘中的位置），该目录树结构即为【**Term Index**】，体积小，适合放在内存中，用于加速搜索
 
-![image-20241221150334581](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20241221150334581.png)
+![0104abdbb7fc03a9d6d9cb8d772656b1](https://github.com/user-attachments/assets/5345fa27-7142-4559-bf8b-df0b962fe86e)
 
 - 当我们需要查找某词项时，只需要搜索Term Index，就能快速获得词项在Term Dictionary中的位置，再跳转到Term Dictionary，通过少量的检索，以定位到具体的词项内容
 
@@ -63,8 +63,8 @@
   =》需要先获取Sorted Fields中的文档，再提取出内部字段进行排序，比较低效
 
   =》更高效的实现是，用空间换时间，再构造出一个**列式存储结构**，将**散落在各个文档中的某个字段集中存储**，当需要对某**字段排序**时，只需要**将这些集中存放的字段一次性读取出来**，如此就能针对性地进行排序，该列式存储结果，即是【**Doc Values**】
+  ![image](https://github.com/user-attachments/assets/2d60129f-4371-4466-ae65-7a3cde210bed)
 
-  ![image-20241221153532768](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20241221153532768.png)
 
 
 
@@ -74,7 +74,8 @@
 
 - 如上所述，倒排索引（组织词项和文档ID等信息的映射）用于搜索，Term Index用于加速搜索（通过字典序排列，便于二分查找），Sorted Fields用于存放**文档完整的原始信息**，以及Doc Values用于**针对指定字段 进行排序和聚合**，这些结构共同组成【Segment】，Segment是一个**具备完整搜索功能的最小单元**
 
-![image-20241221160505662](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20241221160505662.png)
+![image](https://github.com/user-attachments/assets/c1f37cc7-dbcb-4b55-9221-ff15d522da88)
+
 
 # ElasticSearch架构解析
 
@@ -101,12 +102,7 @@
   - 将不同分类的数据写入到不同的Lucene；读取数据时，根据需要，读取不同的Index Name对应的Lucene，大大降低单个Lucene的压力
 
 - 单个Index Name内的数据可能过多，可**将单个Index Name的同类数据拆分成多份**（多个shard分片），**每个shard分片本质上即是一个独立的Lucene库**，如此，将读写操作分摊到多个分片中，以降低对资源的争抢，提升系统性能
-
-  ![image-20241221165117196](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20241221165117196.png)
-
-  
-
-  
+  ![image](https://github.com/user-attachments/assets/6b776789-d8e5-4d26-801f-385bf8530b4d)
 
 ## 高扩展性
 
@@ -120,8 +116,6 @@
 
   - 解决方案：给分片多增加副本
   - 分片分为`Primary shard`和`Replica shard`，即主分片和副本分片，主分片会将数据同步给副本分片，副本分片可提供读操作，还能在主分片挂了后，升级为新的主分片，以保证让系统正常运行，提高系统性能的同时，还保证了系统的高可用
-
-  ![image-20241221172100968](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20241221172100968.png)
 
 
 
@@ -165,8 +159,6 @@
 - 4）副本分片写入完成后，主分片会响应协调节点ACK，表示数据写入完成
 
 - 5）协调节点响应客户端应用 数据写入完成
-
-![image-20241222104450310](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20241222104450310.png)
 
 ![image](https://github.com/user-attachments/assets/c7722363-946c-4f3d-ba7b-a7d9567551e1)
 
