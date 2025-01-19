@@ -395,3 +395,7 @@ redo log和binlog的四个区别如下：
 - 5）**在一条更新语句执行完成后，会开始记录该语句对应的binlog**，此时**记录的binlog会被保存到binlog cache**（并不会立即刷新到磁盘上的binlog文件），在**事务提交时才会统一将事务运行过程中的所有binlog刷新到磁盘**
 
 - 6）等事务提交后，进行两阶段提交
+
+
+参考资料:
+- [MySQL 日志：undo log、redo log、binlog 有什么用？](https://xiaolincoding.com/mysql/log/how_update.html)
