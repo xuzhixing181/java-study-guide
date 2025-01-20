@@ -392,7 +392,7 @@ redo log和binlog的四个区别如下：
 
 ## 扩展
 
-MySQL中的日志除了前面提到的`undo log`、`redo log`、`binlog`日志，还有错误日志、慢查询日志、一般查询日志等。
+- MySQL中的日志除了前面提到的`undo log`、`redo log`、`binlog`日志，还有错误日志、慢查询日志、一般查询日志等。
 
 ### 错误日志（error log）
 
