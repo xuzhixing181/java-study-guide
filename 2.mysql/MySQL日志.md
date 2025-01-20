@@ -17,7 +17,7 @@ update t_user set name = 'xuzhix' where id = 1;
   - **redo log（重做日志）**：InnoDB存储引擎层生成的日志，保证了**事务中的持久性**，主要用于**掉电等故障恢复**
   - **binlog（归档日志）**：Server层生成的日志，主要用于**数据备份和主从复制**
 
-# 为什么需要undo log？
+# 为什么需要undo log
 
 ## 事务回滚
 
@@ -64,7 +64,7 @@ undo log两大作用：
 - undo log和数据页的刷盘策略，都是通过redo log来保证持久化的
 - Buffer Pool中有undo log页，**对undo log页的修改都会记录到redo log**，redo log默认每秒刷盘，以及在提交事务时会刷盘
 
- # 为什么需要redo log？
+ # 为什么需要redo log
 - Buffer Pool可提高读写效率，但**Buffer Pool基于内存实现，一旦断电重启，还没来得及落盘的脏页数据就会丢失**
    为防止断电导致数据丢失的问题，**当有一条记录需要更新时，InnoDB引擎就会先更新内存（同时标记为脏页），再将本次对该页的修改以redo log的形式记录下来**，如此更新操作就算完成了
 
@@ -83,7 +83,7 @@ MySQL之所以需要redo log，有如下两个原因：
 - 1）实现**事务的持久性**，让MySQL拥有Crash-Safe的能力，能够保证**MySQL在任何时间段内突然崩溃，之前提交的记录在重启后都不会丢失**
 - 2）基于WAL技术，将**MySQL的写操作从`随机写`变为`顺序写`**，提升了MySQL写入磁盘的性能
 
-**修改undo页面要记录对应的redo log？**
+**修改undo页面要记录对应的redo log**
 
 - 开启事务后，InnoDB层更新记录前，会先记录相应的undo log，如果是更新操作，则需要将被更新列的旧值记下来，
    生成一条undo log，undo log会写入Buffer Pool中的undo 页面
@@ -126,7 +126,8 @@ MySQL之所以需要redo log，有如下两个原因：
 - redo log文件是以循环写的方式工作，从头开始写，写到末尾就重新回到开头写。InnoDB存储引擎会先写`ib_logfile0`文件，当`ib_logfile0`文件写满时，会切换到`ib_logfile1`文件继续写；当`ib_logfile1`文件写满时，会切换回`ib_logfile0`文件
 - **redo log是为了防止Buffer Pool中的脏页丢失而设计的**，随着系统运行，Buffer Pool中的脏页刷新到磁盘后，redo log中对应的记录就没用了，需要擦除这些旧记录，以腾出空间来记录新的更新操作
 
-![image-20250117081618191](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250117081618191.png)
+![image](https://github.com/user-attachments/assets/eb03797b-a71d-4229-99ff-8bb9f00db6f4)
+
 
 - 如上图所示，redo log采用循环写，InnoDB用`write pos`标记`redo log`当前记录写的位置，用`check point`标记当要前擦除的位置
   - ` write pos`和`check point`都是顺时针移动；
@@ -136,11 +137,11 @@ MySQL之所以需要redo log，有如下两个原因：
 - 如果`write pos`追上了`check point`，则意味着redo log文件满了，MySQL不能再执行新的更新操作，MySQL会被阻塞（针对并发量大的系统，适当设置redo log的文件大小很重要），其后，会停下来，将Buffer Pool中的脏页刷新到磁盘，标记redo log哪些记录可被擦除，其后会擦除这些旧的redo log，等擦除完旧记录腾出空间后，check point会向后顺时针移动，等MySQL恢复正常运行后，继续执行新的更新操作
 - 一次`check point`追赶`write pos`的过程，就是**脏页刷新到磁盘中变成干净页**，再**标记redo log中哪些记录可以被覆盖的过程**               
 
- # 为什么需要binlog?
+ # 为什么需要binlog
 - MySQL在完成一条更新操作后，Server层会生成一条binlog，等之后事务提交时，会将该事务执行过程中产生的所有binlog统一写入binlog文件
 - **binlog文件会记录所有数据库表结构变更和表数据修改的日志**，不会记录查询类的操作，如：`select`和`show`操作
 
- ## 为什么有了binlog，还要有redo log？
+ ## 为什么有了binlog，还要有redo log
 
 - 和MySQL发展的时间线有关，最开始MySQL并没有InnoDB引擎，默认引擎为MyISAM，MyISAM没有crash-safe崩溃恢复能力，所以InnoDB使用redo log来实现crash-safe能力，binlog日志只能用于归档
 
@@ -199,7 +200,7 @@ redo log和binlog的四个区别如下：
 - 因为**从库数量增加，从库连接上来的IO线程会较多**，主库要创建**同样多的log dump线程来处理主从复制的请求**，对主库资源消耗较多，同时还会受限于主库的网络带宽
 - 所以在实际使用中，一个主库一般会有2~3个从库（一主两从一备主），这就是一主多从的MySQL集群架构
 
-## MySQL主从复制有哪些模型？
+## MySQL主从复制有哪些模型
 ### 同步复制
 - 同步复制：MySQL主库提交事务的线程要等待所有从库复制成功响应后，才返回给客户端结果
 - 同步复制在实际项目中不推荐使用，原因如下：
@@ -223,7 +224,8 @@ redo log和binlog的四个区别如下：
 
 - 每个线程都会有自己的binlog cache，最终都会写入到同一个binlog文件   
 
-  ![image-20250118101156478](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250118101156478.png)
+  ![image](https://github.com/user-attachments/assets/913899a3-32a8-4c96-8c1e-0e3040155a37)
+
 
 - 上图中的`write`操作：将日志写入到binlog文件，但并没有将数据持久化到磁盘，因为数据还缓存在文件系统的 Page Cache，      **write不涉及磁盘IO，所以写入速度较快**   
 - 图中的`fsync`操作：将数据持久化到磁盘的操作，会涉及磁盘IO，所以**频繁地fsync会导致磁盘IO升高** 
@@ -266,7 +268,9 @@ redo log和binlog的四个区别如下：
 
 - 当客户端执行commit语句或在自动提交时，MySQL内部开启了一个XA事务，分两阶段来完成XA事务的提交：
 
-  ![image-20250118104936935](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250118104936935.png)
+  ![image](https://github.com/user-attachments/assets/357bd37e-c298-405e-a13c-9113a0f49df0)
+
+  
 
 - 将redo log的写入过程拆分成两个步骤：prepare和commit，中间再穿插写入binlog，具体如下：
 
@@ -277,7 +281,9 @@ redo log和binlog的四个区别如下：
 
 可能会发生崩溃情况如下：
 
-![image-20250118105837137](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250118105837137.png)
+![image](https://github.com/user-attachments/assets/a3fdd1c7-33f2-4c6c-9f8d-9ea93f42004b)
+
+
 
 - 不管是时刻A（redo log已写入磁盘，但binlog还没写入磁盘），还是时刻B（redo log和 binlog都写入磁盘，但还没进入commit阶段）崩溃，此时的redo log会都处于prepare状态
 - 在MySQL重启后会按顺序扫描redo log文件，遇到处于prepare状态的redo log，就会用redo log中的XID去binlog查看是否存在该XID：
@@ -390,23 +396,6 @@ redo log和binlog的四个区别如下：
 
 - 6）等事务提交后，进行两阶段提交
 
-## 扩展
 
-- MySQL中的日志除了前面提到的`undo log`、`redo log`、`binlog`日志，还有错误日志、慢查询日志、一般查询日志等。
-
-### 错误日志（error log）
-
-- `error log`主要记录MySQL在启动、关闭或者运行过程中的错误信息，在MySQL的配置文件`my.cnf`中，可通过`log-error=/var/log/mysqld.log`来配置MySQL错误日志的位置
-
-### 慢查询日志（slow query log）
-
-- MySQL的慢查询日志是MySQL提供的一种日志记录，用于记录响应时间超过阀值的SQL（运行时间超过`long_query_time`值的SQL），则会被记录到慢查询日志中
-- 通过慢查询日志，结合explain执行计划进行全面分析
-- 在生产环境中，如果要手动分析日志，查找、分析SQL会比较麻烦，MySQL提供了日志分析工具`mysqldumpslow`
-
-### 一般查询日志（general log）
-
-- `general log`记录了客户端连接信息以及执行的SQL语句信息，包括客户端连接服务器的时间、客户端发送的所有 SQL 以及其他事件，MySQL 服务启动和关闭等等。
-
-
-
+参考资料:
+- [MySQL 日志：undo log、redo log、binlog 有什么用？](https://xiaolincoding.com/mysql/log/how_update.html)
