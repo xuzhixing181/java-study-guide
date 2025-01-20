@@ -389,3 +389,24 @@ redo log和binlog的四个区别如下：
 - 5）**在一条更新语句执行完成后，会开始记录该语句对应的binlog**，此时**记录的binlog会被保存到binlog cache**（并不会立即刷新到磁盘上的binlog文件），在**事务提交时才会统一将事务运行过程中的所有binlog刷新到磁盘**
 
 - 6）等事务提交后，进行两阶段提交
+
+## 扩展
+
+MySQL中的日志除了前面提到的`undo log`、`redo log`、`binlog`日志，还有错误日志、慢查询日志、一般查询日志等。
+
+### 错误日志（error log）
+
+- `error log`主要记录MySQL在启动、关闭或者运行过程中的错误信息，在MySQL的配置文件`my.cnf`中，可通过`log-error=/var/log/mysqld.log`来配置MySQL错误日志的位置
+
+### 慢查询日志（slow query log）
+
+- MySQL的慢查询日志是MySQL提供的一种日志记录，用于记录响应时间超过阀值的SQL（运行时间超过`long_query_time`值的SQL），则会被记录到慢查询日志中
+- 通过慢查询日志，结合explain执行计划进行全面分析
+- 在生产环境中，如果要手动分析日志，查找、分析SQL会比较麻烦，MySQL提供了日志分析工具`mysqldumpslow`
+
+### 一般查询日志（general log）
+
+- `general log`记录了客户端连接信息以及执行的SQL语句信息，包括客户端连接服务器的时间、客户端发送的所有 SQL 以及其他事件，MySQL 服务启动和关闭等等。
+
+
+
