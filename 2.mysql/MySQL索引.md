@@ -35,7 +35,8 @@
 
 主键索引的B+Tree示意图如下：
 
-![image-20250121221718510](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250121221718510.png)
+![image](https://github.com/user-attachments/assets/8801fbde-81bc-4ebb-b445-fd16f5a37dd1)
+
 
 - 数据库的索引和数据都存储在硬盘中，可将读取一个节点算作一个磁盘I/O，如上的整个查询过程会经历三个节点（三次I/O操作）
 
@@ -48,7 +49,8 @@
 - 主键索引的B+Tree的叶子节点存储的是完整的用户记录；二级索引的B+Tree的叶子节点存储的是主键值
 - 二级索引的B+Tree示意图如下：
 
-![image-20250121221045379](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250121221045379.png)
+![image](https://github.com/user-attachments/assets/7a671287-2c36-4904-a5ee-74f73d6e69a8)
+
 
 - 如果数据能在二级索引中能查询到数据所需的列，就不需要回表，该过程就被称为**覆盖索引**
   如果查询的数据不在二级索引中，会先查询二级索引，获取到对应叶子节点的主键值，再检索主键索引，查询到行数据所需要的列，该过程称为**回表**
@@ -227,7 +229,8 @@
    
    - 如果使用非自增主键，由于**每次插入主键的索引值都是随机**的（**每次插入新的数据时，可能会插入到现有数据页中间的某个位置**），这导致不得不移动其他数据来满足新数据的插入，甚至需要从一个页面复制数据到另一个页面，这种情况通常被称为页分裂
    
-     ![image-20250122074225391](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250122074225391.png)
+     ![image](https://github.com/user-attachments/assets/2e171605-ce95-4e27-92dc-94a1cd06cf53)
+
    
    - 此外，**页分裂还可能会造成大量的内存碎片**，导致索引结构不紧凑，从而影响查询效率
      =》 因此，在使用InnoDB存储引擎时，如果没有特别的业务需求，建议使用自增字段作为主键
