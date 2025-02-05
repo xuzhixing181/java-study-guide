@@ -6,11 +6,13 @@
 
   JDK1.7：
 
-<img src="C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250127174125656.png" alt="image-20250127174125656" style="zoom: 80%;" />
+![image](https://github.com/user-attachments/assets/0da30f2a-04ba-4f25-8053-ea9a64bb6f01)
+
 
 JDK1.8：
 
-<img src="C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250127175649431.png" alt="image-20250127175649431" style="zoom:80%;" />
+![image](https://github.com/user-attachments/assets/76929260-4991-464f-be1f-6743326a8743)
+
 
 ## 线程私有
 
@@ -37,7 +39,9 @@ JDK1.8：
 
 - 栈由一个个栈帧组成，每个栈帧中都有：局部变量表、操作数栈、动态链接、方法返回地址
 
-  ![image-20250128144040176](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250128144040176.png)
+  ![image](https://github.com/user-attachments/assets/d11c61b9-4534-47d4-96d8-c4ce2661f419)
+
+
 
 #### 局部变量表
 
@@ -55,8 +59,9 @@ JDK1.8：
 
   当一个方法需要调用其他方法，需要将常量池中指向方法的符号引用转化为在内存地址中的直接引用，即将符号引用转化为调用方的直接引用
 
-  ![](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250128153504900.png)
+  ![image](https://github.com/user-attachments/assets/d5632e0d-8b29-4fcb-bad7-667261fc1770)
 
+  
 - 如果函数调用陷入无限循环，就会导致栈中被压入太多栈帧而占用太多空间，导致栈空间过深
 
   且栈的内存不允许动态扩展，当线程请求栈的深度超过当前Java虚拟机栈的最大深度时，就抛出`StackOverFlowError`
@@ -89,7 +94,9 @@ JDK1.8：
 
   3）永久代（Permanent Generation）
 
-![image-20250128163530729](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250128163530729.png)
+  
+![image](https://github.com/user-attachments/assets/dd918f45-6fd6-412c-af6f-eb3e222ed9d7)
+
 
 - 如上图所示，Eden区、Survivor区s0和s1都属于新生代，Tenured属于老年代，Permanent Generation属于永久代
 - JDK8版本之后，永久代已被Metaspace（元空间）取代，元空间使用的是本地内存
@@ -104,7 +111,7 @@ JDK1.8：
 
 - 方法区和永久代以及元空间的关系：永久代以及元空间是HotSpot虚拟机对虚拟机规范中方法区的两种实现，且永久代是JDK1.8之前的方法区实现，元空间是JDK1.8及之后的实现
 
-  ![image-20250128171431417](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250128171431417.png)
+  
 
 - 永久代为什么要替换为元空间（MetaSpace）？
 
@@ -155,7 +162,11 @@ JDK1.8：
 
 - JDK1.7之前，字符串常量池存放在永久代，JDK1.7字符串常量池和静态变量从永久代移动到了Java堆中
 
-  ![image-20250205213850392](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250205213850392.png)![image-20250205214227958](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250205214227958.png)
+
+  ![Uploading image.png…]()
+  ![Uploading image.png…]()
+
+
 
 
 
@@ -206,7 +217,9 @@ JDK1.7为什么要将字符串常量池移到堆中？
 - 直接内存是一种特殊的内存缓冲区，并不在Java堆或方法区中分配，而是通过JNI的方式在本地内存上分配，即**直接内存的分配不会受到Java堆的限制**，但会受到**本机总内存大小以及处理器寻址空间的限制**
 - 直接内存并不是虚拟机运行时数据区的一部分，也不是虚拟机规范中定义的内存区域，但这部分内存也会被频繁地使用，也还可能导致`OutOfMemoryError`出现
 - JDK1.4中新加入的NIO（NIO-Blocking I/O，也被称为New I/O），是一种**基于通道（Channel）和缓存区（Buffer）的I/O方式**，可直接**使用native函数库直接分配堆外内存**，再通过一个**存储在Java堆中的DirectByteBuffer对象来作为这块内存的引用进行操作**，如此以提高在某些场景中的性能，避免了在Java堆和Native堆之间来回复制数据
-- 
+
+  参考：
+  - https://javaguide.cn/java/jvm/memory-area.html
 
 
 
