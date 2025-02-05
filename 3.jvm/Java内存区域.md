@@ -162,12 +162,8 @@ JDK1.8：
 
 - JDK1.7之前，字符串常量池存放在永久代，JDK1.7字符串常量池和静态变量从永久代移动到了Java堆中
 
-
-  ![Uploading image.png…]()
-  ![Uploading image.png…]()
-
-
-
+![image](https://github.com/user-attachments/assets/c8430e76-bf7c-4a67-a3a0-e4638396bf32)
+![image](https://github.com/user-attachments/assets/ad86ac19-7413-4357-b262-a91dc9621862)
 
 
 JDK1.7为什么要将字符串常量池移到堆中？
