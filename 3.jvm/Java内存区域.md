@@ -282,7 +282,8 @@ JDK1.7为什么要将字符串常量池移到堆中？
 
 - 句柄访问：Java堆中将会划分出一块内存来作为句柄池，reference中存储对象的句柄地址，而句柄中包含对象的实例数据和对象类型数据各自的具体地址信息
 
-  ![image-20250206211257851](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250206211257851.png)
+  ![image](https://github.com/user-attachments/assets/56223699-030e-4c85-be9e-2c75b093c011)
+  
 
   - 应用场景：适用于**对象移动较频繁的场景**（如使用标记-整理算法的垃圾收集器），可降低对象移动时对引用变量的维护成本
 
@@ -295,7 +296,8 @@ JDK1.7为什么要将字符串常量池移到堆中？
 
 - 直接指针：如果使用直接指针访问，reference中直接存储对象的地址
 
-  ![image-20250206212334735](C:\Users\xyl\AppData\Roaming\Typora\typora-user-images\image-20250206212334735.png)
+  ![image](https://github.com/user-attachments/assets/cfce347a-27e3-47b4-8f38-f5fe18ffe52c)
+
 
   - 应用场景：适用于**对性能要求高、对象移动较少的场景**（如大多数的Java程序、Hotspot虚拟机默认使用的就是直接指针访问）
 
